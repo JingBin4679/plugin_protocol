@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin name="simplemain"
+        id="plugin://simple_main"
+        version="2">
+    <attrs>
+        <attr name="desc">简化版首页插件</attr>
+    </attrs>
+    <page desc="首页" design="res/simple_main_design.jpg" id="page_simple_main" screen="1920x1080"
+          type="main">
+        <attrs>
+            <attr name="name">简化版版首页</attr>
+            <attr name="width">1920</attr>
+            <attr name="height">1080</attr>
+        </attrs>
+        <data-handler>
+            <handler commmand="open_search_page" desc="打开搜索页面" data=""></handler>
+            <handler commmand="open_history_page" desc="打开历史记录页面" data=""></handler>
+        </data-handler>
+        <data-filter/>
+        <view desc="首页LOGO" design="res/simple_main_logo.jpg" id="position://logo_item" index="0" min="1" max="1">
+            <configs>
+                <config name="logo" desc="logo图片" type="image"/>
+                <config name="slogan" desc="企业理念" type="text"/>
+            </configs>
+            <attrs>
+                <attr name="x">84</attr>
+                <attr name="y">66</attr>
+                <attr name="width">156</attr>
+                <attr name="height">108</attr>
+            </attrs>
+        </view>
+        <view desc="栏目" design="res/simple_main_category.jpg" id="position://category_list"
+              index="1" max="2" min="2">
+            <configs>
+                <config name="image-normal" desc="Item默认图片" type="image"/>
+                <config name="image-focus" desc="Item焦点图片" type="image"/>
+            </configs>
+            <attrs>
+                <attr name="x">84</attr>
+                <attr name="y">291</attr>
+                <attr name="width">336</attr>
+                <attr name="height">282</attr>
+                <attr name="extend-direction" desc="元素延伸方向,取值范围为[right,left,up,down]">down</attr>
+                <attr name="margin" desc="元素间间隔，首尾元素不作用于父容器，依次为[上，左，右，下]">0,0,0,21</attr>
+            </attrs>
+            <data-filter>
+                <filter data="category"/>
+            </data-filter>
+        </view>
+        <view desc="推荐横海报" design="res/simple_main_horizontal_recommend.jpg"
+              id="position://recommend_horizontal" index="2" max="1" min="0">
+            <attrs>
+                <attr name="x">441</attr>
+                <attr name="y">291</attr>
+                <attr name="width">846</attr>
+                <attr name="height">549</attr>
+            </attrs>
+            <configs>
+                <config name="image-normal" desc="海报图片" type="image"/>
+                <config name="title" desc="标题" type="text"/>
+                <config name="desc" desc="看点" type="text"/>
+            </configs>
+            <data-filter>
+                <filter data="media"/>
+            </data-filter>
+        </view>
+        <view desc="推荐竖海报" design="res/main_simple_vertical_recommend.jpg"
+              id="position://recommend_vertical" index="3" min="0">
+            <attrs>
+                <attr name="x">1308</attr>
+                <attr name="y">291</attr>
+                <attr name="width">393</attr>
+                <attr name="height">549</attr>
+                <attr name="extend-direction" desc="元素延伸方向,取值范围为[right,left,up,down]">right</attr>
+                <attr name="margin" desc="元素间间隔，首尾元素不作用于父容器，依次为[上，左，右，下]">0,0,21,0</attr>
+            </attrs>
+            <configs>
+                <config name="image-normal" desc="海报图片" type="image"/>
+                <config name="title" desc="标题" type="text"/>
+                <config name="desc" desc="看点" type="text"/>
+            </configs>
+            <data-filter>
+                <filter data="media"/>
+            </data-filter>
+        </view>
+        <view desc="欢迎页面配置" id="position://main_welcome" index="4" max="10" min="0" static="true">
+            <attrs>
+                <attr name="x">0</attr>
+                <attr name="y">0</attr>
+                <attr name="width">1920</attr>
+                <attr name="height">1080</attr>
+            </attrs>
+            <configs>
+                <config name="show_length" desc="展示时长（单位：秒）" type="text"/>
+            </configs>
+            <data-filter>
+                <filter data="media"></filter>
+                <filter data="image"></filter>
+            </data-filter>
+        </view>
+    </page>
+</plugin>
