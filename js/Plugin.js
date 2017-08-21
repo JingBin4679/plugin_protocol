@@ -3,13 +3,20 @@ var ERROR_INVALID_PLUGIN_PROTOCOL_FILE = 1;//插件协议有问题
 var ERROR_NO_PLUGIN_PAGE = 2;//插件中没有插件页面
 var ERROR_NOT_FIND_THE_PLUGIN_PAGE = 3; //插件中没有对应的插件页面。
 
-callback.onError = function (code, error) {
-
-    document.write("code = " + code + "         error = " + error);
+callback.onError = function (cb, code, error) {
+    pluginPage = null;
+    if(cb == null) {
+        document.write("code = " + code + "         error = " + error);
+    }
+    cb.onError(code, error);
 };
 
-callback.onSuccess = function (code, result) {
-    document.write(obj2string(result));
+callback.onSuccess = function (cb, code, result) {
+    pluginPage = result;
+    if(cb == null) {
+        document.write(obj2string(result));
+    }
+    cb.onSuccess(code, result);
 };
 
 function obj2string(o) {
@@ -156,20 +163,20 @@ function parsePluginPageView(views, page) {
 }
 
 
-function parsePluginProtocol(protocol, pageId, callback) {
+function parsePluginProtocol(protocol, pageId, cb) {
     var domParser = new DOMParser();
     var document = domParser.parseFromString(protocol, "text/xml");
     var plugins = document.getElementsByTagName("plugin");
     if (plugins == null || plugins.length == 0) {
-        callback.onError(ERROR_INVALID_PLUGIN_PROTOCOL_FILE, "invalid plugin protocol file");
-        return;
+        callback.onError(cb, ERROR_INVALID_PLUGIN_PROTOCOL_FILE, "invalid plugin protocol file");
+        return false;
     }
     var plugin = plugins[0];
 
     var pages = plugin.getElementsByTagName("page");
     if (pages == null || pages.length == 0) {
-        callback.onError(ERROR_NO_PLUGIN_PAGE, "this plugin has no page");
-        return;
+        callback.onError(cb, ERROR_NO_PLUGIN_PAGE, "this plugin has no page");
+        return false;
     }
     var targetPage;
     for (var index = 0; index < pages.length; ++index) {
@@ -179,32 +186,40 @@ function parsePluginProtocol(protocol, pageId, callback) {
             break;
         }
     }
-
     if (targetPage == null) {
-        callback.onError(ERROR_NOT_FIND_THE_PLUGIN_PAGE);
-        return;
+        callback.onError(cb, ERROR_NOT_FIND_THE_PLUGIN_PAGE);
+        return false;
     }
-
-    pluginPage.id = targetPage.getAttribute("id");
-    pluginPage.desc = targetPage.getAttribute("desc");
-    pluginPage.screen = targetPage.getAttribute("screen");
-    pluginPage.type = targetPage.getAttribute("type");
-    pluginPage.design = targetPage.getAttribute("design");
+    var page = new Object();
+    page.id = targetPage.getAttribute("id");
+    page.desc = targetPage.getAttribute("desc");
+    page.screen = targetPage.getAttribute("screen");
+    page.type = targetPage.getAttribute("type");
+    page.design = targetPage.getAttribute("design");
 
     var views = targetPage.getElementsByTagName("view");
-    parsePluginPageView(views, pluginPage);
+    parsePluginPageView(views, page);
 
     var attrs = targetPage.getElementsByTagName("attrs");
-    pluginPage.attrs = parseAttrs(attrs);
+    page.attrs = parseAttrs(attrs);
 
     var configs = targetPage.getElementsByTagName("configs");
-    pluginPage.configs = parseConfigs(configs);
+    page.configs = parseConfigs(configs);
 
     var filters = targetPage.getElementsByTagName("data-filter");
-    pluginPage.filters = parseFilter(filters);
+    page.filters = parseFilter(filters);
 
     var handlers = targetPage.getElementsByTagName("data-handler");
-    pluginPage.handlers = parseHandler(handlers);
+    page.handlers = parseHandler(handlers);
 
-    callback.onSuccess(0, pluginPage);
+    callback.onSuccess(cb, 0, page);
+    return true;
+}
+
+function getAllViewItem() {
+    if(pluginPage == null) {
+        return null;
+    }
+    return pluginPage.views;
+
 }

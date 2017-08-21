@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Test Plugin</title>
+    <link type="text/css" href="../css/test.css" rel="stylesheet"/>
     <script src="../js/Plugin.js"></script>
     <script type="text/javascript">
         var protocol = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -108,9 +109,37 @@
             "            </data-filter>\n" +
             "        </view>\n" +
             "    </page>\n" +
-            "</plugin>\n"
+            "</plugin>\n";
+        var cb = new Object();
+        cb.onError = function (code, error) {
+            console.log(code + "    " + error);
+        }
+        cb.onSuccess = function (code, pluginPage) {
+//            document.write(obj2string(pluginPage));
+        }
+        window.onload = new function () {
+            var result = parsePluginProtocol(protocol, 'page_simple_main', cb);
+        }
+
+        function gen() {
+            var items = getAllViewItem();
+            if (items != null && items.length > 0) {
+                var content = document.getElementById("view_content");
+                for (var index in items) {
+                    var div = document.createElement("div");
+                    div.className = "view";
+                    div.innerHTML = "<h2>" + items[index].desc + "</h2>";
+                    content.appendChild(div);
+                }
+            }
+        }
     </script>
+    <style>
+    </style>
 </head>
-<body onload="parsePluginProtocol(protocol, 'page_simple_main', callback)">
+<body>
+<div id="view_content" class="container">
+    <button value="生成" class="gen" onclick="gen()">生成</button>
+</div>
 </body>
 </html>
